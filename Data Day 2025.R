@@ -44,6 +44,24 @@ lyrics_words <- songs_df %>%
   unnest_tokens(word, lyrics_clean) %>%
   anti_join(stop_words)
 
+
+st <- "The 10 most frequent words from Billie Eilish’s lyrics, based on her top 50 songs on Genius. The 23-year-old
+Highland Park native has been shaping music since 2015, earning nine Grammy Awards, two Academy Awards, two Golden Globes,
+and multiple MTV VMAs, while reaching over 103 million Spotify listeners."
+
+# Generate a social media caption with custom colors and font styling
+social <- andresutils::social_caption(font_family = font2, icon_color = "#0ff40f") 
+
+cap <- paste0(
+  st,
+  "<br>#DataDay2025CSULB | **Source**: Genius<br><br>",
+  social
+)
+
+top_10 <- lyrics_words %>%
+  count(word, sort = TRUE) %>%
+  slice(1:10)
+
 sentiments_df <- lyrics_words %>%
   inner_join(get_sentiments("bing")) %>% 
   count(title, sentiment) %>%
@@ -68,24 +86,6 @@ social <- andresutils::social_caption(font_family = font1, bg_color = "#eed68e")
 cap <- paste0(
   "#DataDay2025CSULB | **Source**: Genius | **Graphic**: ", social
 )
-
-st <- "The 10 most frequent words from Billie Eilish’s lyrics, based on her top 50 songs on Genius. The 23-year-old
-Highland Park native has been shaping music since 2015, earning nine Grammy Awards, two Academy Awards, two Golden Globes,
-and multiple MTV VMAs, while reaching over 103 million Spotify listeners."
-
-# Generate a social media caption with custom colors and font styling
-social <- andresutils::social_caption(font_family = font2, icon_color = "#0ff40f") 
-
-cap <- paste0(
-  st,
-  "<br>#DataDay2025CSULB | **Source**: Genius<br><br>",
-  social
-)
-
-top_10 <- lyrics_words %>%
-  count(word, sort = TRUE) %>%
-  slice(1:10)
-
 top_10 %>%
   ggplot(aes(x = fct_reorder(word, n), y = n)) +
   geom_bar(stat = "identity", fill = "#0ff40f", width = 0.8) +
